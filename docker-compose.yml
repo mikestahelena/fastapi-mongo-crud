@@ -1,0 +1,28 @@
+version: "3.0"
+services:
+  api:
+    image: fastapi-mongo-crud:latest
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+  database:
+    image: mongo:latest
+    env_file:
+      - .env
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    restart: on-failure
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_HOST=${MONGO_INITDB_HOST}
+    depends_on:
+      - api
